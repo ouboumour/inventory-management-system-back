@@ -30,5 +30,5 @@ deploy-image: build-image
 	@docker push $(IMAGE_BACKEND)
 
 frontend-image:
-	@docker pull $(IMAGE_BACKEND)
-	@docker run -it --rm $(IMAGE_BACKEND)
+	@docker pull $(IMAGE_FRONTEND)
+	@docker run -it --rm $(IMAGE_FRONTEND)
