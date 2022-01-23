@@ -31,4 +31,16 @@ class UserController @Autowired constructor(val service: UserService) {
     @PostMapping("/user/create")
     fun createUser(@RequestBody userCreateDto: UserCreateDto): UserDto = service.addUser(userCreateDto)
 
+    @DeleteMapping("/{id}")
+    fun deleteUserById(@PathVariable id: String): HttpStatus {
+        service.deleteUserById(id)
+        return HttpStatus.OK
+    }
+
+    @PutMapping("/{id}")
+    fun updateUserById(@PathVariable id: String, @RequestBody userCreateDto: UserCreateDto): HttpStatus {
+        service.updateUserById(id, userCreateDto)
+        return HttpStatus.OK
+    }
+
 }
