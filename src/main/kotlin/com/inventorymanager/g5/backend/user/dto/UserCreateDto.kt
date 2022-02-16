@@ -5,5 +5,4 @@ data class UserCreateDto(
     val password: String,
     val firstname: String,
     val lastname: String,
-    val description: String = ""
 )

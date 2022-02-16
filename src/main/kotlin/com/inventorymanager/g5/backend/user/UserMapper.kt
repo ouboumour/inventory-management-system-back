@@ -11,20 +11,18 @@ class UserMapper {
             userCreateDto.password,
             userCreateDto.firstname,
             userCreateDto.lastname,
-            userCreateDto.description
         )
 
-    fun userToUserDto(user: User): UserDto = UserDto(user.id!!, user.firstname, user.lastname)
+    fun userToUserDto(user: User): UserDto = UserDto(user.id!!, user.login, user.firstname, user.lastname)
 
     fun usersToUsersDto(users: Iterable<User>): List<UserDto> =
-        users.map { UserDto(it.id!!, it.firstname, it.lastname) }
+        users.map { UserDto(it.id!!, it.login, it.firstname, it.lastname) }
 
     fun updateUser(it: User, userCreateDto: UserCreateDto): User = User(
         userCreateDto.login,
         userCreateDto.password,
         userCreateDto.firstname,
         userCreateDto.lastname,
-        userCreateDto.description,
         it.id
     )
 

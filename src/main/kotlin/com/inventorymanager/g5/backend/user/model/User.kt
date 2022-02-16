@@ -11,6 +11,5 @@ data class User(
     val password: String,
     var firstname: String,
     var lastname: String,
-    var description: String? = null,
     @Id var id: String? = UUID.randomUUID().toString()
 )
