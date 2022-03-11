@@ -29,9 +29,8 @@ class StorageLocationController @Autowired constructor(val storageLocationServic
         }
     }
 
-    // create
-    @RequestMapping(method = [RequestMethod.POST])
-    fun create(@RequestBody stockLocationDTO: @Valid StorageLocationDTO): ResponseEntity<StorageLocationDTO?>? {
+    @PostMapping
+    fun create(@Valid @RequestBody stockLocationDTO: StorageLocationDTO): ResponseEntity<StorageLocationDTO?>? {
         return try {
             ResponseEntity<StorageLocationDTO?>(storageLocationService.create(stockLocationDTO), HttpStatus.OK)
         } catch (e: ResourceDoesNotExistException) {
@@ -39,5 +38,30 @@ class StorageLocationController @Autowired constructor(val storageLocationServic
         } catch (e: DuplicateEntityException) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message, e)
         }
+    }
+
+    @PutMapping("/{id}")
+    fun update(@PathVariable id : String , @Valid @RequestBody stockLocationDTO: StorageLocationDTO) : ResponseEntity<StorageLocationDTO>{
+        try {
+            return ResponseEntity.ok(storageLocationService.update(id, stockLocationDTO));
+        } catch (e : ResourceDoesNotExistException) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, e.message, e);
+        } catch (e : DuplicateEntityException) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message, e);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    fun delete(@PathVariable id: String) : ResponseEntity<String>{
+        try {
+            return ResponseEntity.ok(storageLocationService.delete(id))
+        } catch (e: ResourceDoesNotExistException) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, e.message, e)
+        }
+    }
+
+    @GetMapping("/{id}/objects")
+    fun getStorageObjects(@PathVariable id: String) : String {
+        return "This call logic isn't implemented yet!!"
     }
 }

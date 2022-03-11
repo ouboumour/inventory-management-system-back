@@ -26,5 +26,6 @@ class StorageLocation (
         cascade = [CascadeType.ALL],
         mappedBy = "storageParent",
         orphanRemoval = true)
+    @OrderBy("name ASC")
     var storageChildren: Set<StorageLocation>? = LinkedHashSet(),
 )

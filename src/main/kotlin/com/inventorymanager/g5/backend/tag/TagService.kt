@@ -32,18 +32,18 @@ class TagService @Autowired constructor(
     }
 
     @Throws(DuplicateEntityException::class)
-    fun update(id: String, @Valid tagDTO: TagDTO) : TagDTO? {
+    fun update(tagId: String, @Valid tagDTO: TagDTO) : TagDTO? {
 
-        val tag : Tag = tagRepository.findById(id).orElseThrow{ResourceDoesNotExistException(Tag::class.java , tagDTO.id)}
-        val tagFound : Optional<Tag> = tagRepository.findByName(tagDTO.name)
+        val tagById : Tag = tagRepository.findById(tagId).orElseThrow{ResourceDoesNotExistException(Tag::class.java , tagDTO.id)}
+        val tagByName : Optional<Tag> = tagRepository.findByName(tagDTO.name)
 
         // Case when another Tag exists with the same name
-        if (tagFound.isPresent && tagFound.get().id != id) {
+        if (tagByName.isPresent && tagByName.get().id != tagId) {
             throw DuplicateEntityException(Tag::class.java, "name", tagDTO.name)
         }
 
-        tagMapper.mergeToDomain(tagDTO, tag)
-        return tagMapper.domainToDto(tagRepository.save(tag))
+        tagMapper.mergeToDomain(tagDTO, tagById)
+        return tagMapper.domainToDto(tagRepository.save(tagById))
     }
 
     @Throws(ResourceDoesNotExistException::class)
