@@ -6,5 +6,6 @@ import java.util.*
 
 @Repository
 interface TagRepository : CrudRepository<Tag, String> {
+    fun findAllByOrderByName(): Iterable<Tag>
     fun findByName(name: String?): Optional<Tag>
 }
