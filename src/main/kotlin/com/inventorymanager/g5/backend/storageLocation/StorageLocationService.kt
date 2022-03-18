@@ -80,4 +80,14 @@ class StorageLocationService @Autowired constructor(
         return storageLocationId
     }
 
+    @Throws(ResourceDoesNotExistException::class)
+    fun getStorageDirectChildren(storageLocationId : String): Iterable<StorageLocationDTO> {
+        storageLocationRepository
+            .findById(storageLocationId)
+            .orElseThrow { ResourceDoesNotExistException(StorageLocation::class.java, storageLocationId) }
+
+        return storageLocationRepository.getStorageDirectChildren(storageLocationId)
+            .map(storageLocationMapper::domainToDto)
+            .sortedBy { p -> p.name }
+    }
 }

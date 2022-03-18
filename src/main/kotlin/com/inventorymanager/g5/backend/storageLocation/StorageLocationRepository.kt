@@ -11,4 +11,8 @@ interface StorageLocationRepository : CrudRepository<StorageLocation, String> {
 
     @Query("select sl FROM StorageLocation sl WHERE sl.storageParent.id is null")
     fun getOnlyRoots() : List<StorageLocation>
+
+
+    @Query("select sl FROM StorageLocation sl WHERE sl.storageParent.id = :storageId")
+    fun getStorageDirectChildren(storageId : String?) : List<StorageLocation>
 }

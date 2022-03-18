@@ -59,6 +59,15 @@ class StorageLocationController @Autowired constructor(val storageLocationServic
         }
     }
 
+    @GetMapping("/{id}/storage-direct-children")
+    fun getDirectStorageChildren(@PathVariable id: String) : ResponseEntity<Iterable<StorageLocationDTO>> {
+        try {
+            return ResponseEntity.ok(storageLocationService.getStorageDirectChildren(id))
+        } catch (e: ResourceDoesNotExistException) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, e.message, e)
+        }
+    }
+
     @GetMapping("/{id}/objects")
     fun getStorageObjects(@PathVariable id: String) : String {
         return "This call logic isn't implemented yet!!"
