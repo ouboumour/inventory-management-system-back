@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
+import java.util.*
 import javax.validation.Valid
 
 
@@ -15,6 +16,7 @@ import javax.validation.Valid
 @RequestMapping("/api/storage-locations")
 @Validated
 class StorageLocationController @Autowired constructor(val storageLocationService: StorageLocationService) {
+
     @GetMapping
     fun getAll(@RequestParam(defaultValue = "true") onlyRoots : Boolean): ResponseEntity<Iterable<StorageLocationDTO>> {
         return ResponseEntity.ok(storageLocationService.getAll(onlyRoots));
@@ -39,6 +41,7 @@ class StorageLocationController @Autowired constructor(val storageLocationServic
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message, e)
         }
     }
+
     @PutMapping("/{id}")
     fun update(@PathVariable id : String , @Valid @RequestBody stockLocationDTO: StorageLocationDTO) : ResponseEntity<StorageLocationDTO>{
         try {
@@ -71,5 +74,14 @@ class StorageLocationController @Autowired constructor(val storageLocationServic
     @GetMapping("/{id}/objects")
     fun getStorageObjects(@PathVariable id: String) : String {
         return "This call logic isn't implemented yet!!"
+    }
+
+    @GetMapping("/{id}/absolute-name-path")
+    fun getStorageLocationNameWithAbsolutePath(@PathVariable id: String) : ResponseEntity<LinkedList<String?>> {
+        try {
+            return ResponseEntity.ok(storageLocationService.getStorageLocationNameWithAbsolutePath(id))
+        } catch (e: ResourceDoesNotExistException) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, e.message, e)
+        }
     }
 }

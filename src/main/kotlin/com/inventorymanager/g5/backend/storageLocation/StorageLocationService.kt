@@ -90,4 +90,24 @@ class StorageLocationService @Autowired constructor(
             .map(storageLocationMapper::domainToDto)
             .sortedBy { p -> p.name }
     }
+
+    @Throws(ResourceDoesNotExistException::class)
+    fun getStorageLocationNameWithAbsolutePath(storageLocationId : String): LinkedList<String?> {
+        val storageLocation : StorageLocation = storageLocationRepository
+            .findById(storageLocationId)
+            .orElseThrow { ResourceDoesNotExistException(StorageLocation::class.java, storageLocationId) }
+
+        var pathNamesList =  LinkedList<String?>(listOf(storageLocation.name))
+        addName(storageLocation.storageParent?.id, pathNamesList)
+
+        return pathNamesList
+    }
+
+    private fun addName(storageLocationId: String?, pathNamesList :LinkedList<String?>) {
+        if (storageLocationId != null) {
+            val parentStorageLocation: StorageLocation = storageLocationRepository.findById(storageLocationId).get()
+            pathNamesList.add(0, parentStorageLocation.name)
+            addName(parentStorageLocation.storageParent?.id, pathNamesList)
+        }
+    }
 }
