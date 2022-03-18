@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
+import java.util.*
 import javax.validation.Valid
 
 
@@ -15,15 +16,16 @@ import javax.validation.Valid
 @RequestMapping("/api/storage-locations")
 @Validated
 class StorageLocationController @Autowired constructor(val storageLocationService: StorageLocationService) {
+
     @GetMapping
-    fun getAll(): ResponseEntity<Iterable<StorageLocationDTO>> {
-        return ResponseEntity.ok(storageLocationService.getAll());
+    fun getAll(@RequestParam(defaultValue = "true") onlyRoots : Boolean): ResponseEntity<Iterable<StorageLocationDTO>> {
+        return ResponseEntity.ok(storageLocationService.getAll(onlyRoots));
     }
 
     @GetMapping("/{id}")
-    fun get(@PathVariable id: String, @RequestParam(defaultValue = "true") withoutChildren : Boolean): ResponseEntity<StorageLocationDTO> {
+    fun get(@PathVariable id: String): ResponseEntity<StorageLocationDTO> {
         try {
-            return ResponseEntity.ok(storageLocationService.get(id, withoutChildren))
+            return ResponseEntity.ok(storageLocationService.get(id))
         } catch (e: ResourceDoesNotExistException) {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, e.message, e)
         }
@@ -60,8 +62,26 @@ class StorageLocationController @Autowired constructor(val storageLocationServic
         }
     }
 
+    @GetMapping("/{id}/storage-direct-children")
+    fun getDirectStorageChildren(@PathVariable id: String) : ResponseEntity<Iterable<StorageLocationDTO>> {
+        try {
+            return ResponseEntity.ok(storageLocationService.getStorageDirectChildren(id))
+        } catch (e: ResourceDoesNotExistException) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, e.message, e)
+        }
+    }
+
     @GetMapping("/{id}/objects")
     fun getStorageObjects(@PathVariable id: String) : String {
         return "This call logic isn't implemented yet!!"
+    }
+
+    @GetMapping("/{id}/absolute-name-path")
+    fun getStorageLocationNameWithAbsolutePath(@PathVariable id: String) : ResponseEntity<LinkedList<String?>> {
+        try {
+            return ResponseEntity.ok(storageLocationService.getStorageLocationNameWithAbsolutePath(id))
+        } catch (e: ResourceDoesNotExistException) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, e.message, e)
+        }
     }
 }

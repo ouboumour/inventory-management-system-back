@@ -2,7 +2,6 @@ package com.inventorymanager.g5.backend.storageLocation
 
 import com.inventorymanager.g5.backend.exceptions.DuplicateEntityException
 import com.inventorymanager.g5.backend.exceptions.ResourceDoesNotExistException
-import com.inventorymanager.g5.backend.tag.Tag
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.*
@@ -14,18 +13,18 @@ class StorageLocationService @Autowired constructor(
     private val storageLocationMapper: StorageLocationMapper
 ){
 
-    fun getAll() : Iterable<StorageLocationDTO> {
-       val storageLocations : Iterable<StorageLocation> = storageLocationRepository.getAllRoot()
+    fun getAll(onlyRoots : Boolean = true) : Iterable<StorageLocationDTO> {
+       val storageLocations : Iterable<StorageLocation> =
+         if(onlyRoots) storageLocationRepository.getOnlyRoots()
+         else storageLocationRepository.findAll()
        return storageLocations.map(storageLocationMapper::domainToDto)
     }
 
     @Throws(ResourceDoesNotExistException::class)
-    fun get(storageLocationId : String, withoutChildren : Boolean) : StorageLocationDTO {
+    fun get(storageLocationId : String) : StorageLocationDTO {
         val storageLocation: StorageLocation = storageLocationRepository
             .findById(storageLocationId)
             .orElseThrow { ResourceDoesNotExistException(StorageLocation::class.java, storageLocationId) }
-
-        if (withoutChildren) return storageLocationMapper.domainToDtoWithoutChildren(storageLocation)
         return storageLocationMapper.domainToDto(storageLocation)
     }
 
@@ -39,7 +38,7 @@ class StorageLocationService @Autowired constructor(
 
         if(storageLocationDTO.storageParentId != null) {
             // check parent storageLocation existence
-            val parentEntity : StorageLocation =storageLocationRepository
+            storageLocationRepository
                 .findById(storageLocationDTO.storageParentId!!)
                 .orElseThrow{ ResourceDoesNotExistException(StorageLocation::class.java, storageLocationDTO.storageParentId)}
         }
@@ -68,6 +67,7 @@ class StorageLocationService @Autowired constructor(
         }
 
         storageLocationMapper.mergeToDomain(storageLocationDTO, storageLocationById)
+        // prevent displaying the updated storage children in response body
         return storageLocationMapper.domainToDtoWithoutChildren(storageLocationRepository.save(storageLocationById))
     }
 
@@ -80,4 +80,34 @@ class StorageLocationService @Autowired constructor(
         return storageLocationId
     }
 
+    @Throws(ResourceDoesNotExistException::class)
+    fun getStorageDirectChildren(storageLocationId : String): Iterable<StorageLocationDTO> {
+        storageLocationRepository
+            .findById(storageLocationId)
+            .orElseThrow { ResourceDoesNotExistException(StorageLocation::class.java, storageLocationId) }
+
+        return storageLocationRepository.getStorageDirectChildren(storageLocationId)
+            .map(storageLocationMapper::domainToDto)
+            .sortedBy { p -> p.name }
+    }
+
+    @Throws(ResourceDoesNotExistException::class)
+    fun getStorageLocationNameWithAbsolutePath(storageLocationId : String): LinkedList<String?> {
+        val storageLocation : StorageLocation = storageLocationRepository
+            .findById(storageLocationId)
+            .orElseThrow { ResourceDoesNotExistException(StorageLocation::class.java, storageLocationId) }
+
+        var pathNamesList =  LinkedList<String?>(listOf(storageLocation.name))
+        addName(storageLocation.storageParent?.id, pathNamesList)
+
+        return pathNamesList
+    }
+
+    private fun addName(storageLocationId: String?, pathNamesList :LinkedList<String?>) {
+        if (storageLocationId != null) {
+            val parentStorageLocation: StorageLocation = storageLocationRepository.findById(storageLocationId).get()
+            pathNamesList.add(0, parentStorageLocation.name)
+            addName(parentStorageLocation.storageParent?.id, pathNamesList)
+        }
+    }
 }

@@ -16,7 +16,7 @@ class StorageLocation (
 
     @ManyToOne(
         targetEntity = StorageLocation::class,
-        fetch = FetchType.EAGER
+        fetch = FetchType.LAZY
     )
     var storageParent: StorageLocation?,
 
