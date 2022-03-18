@@ -1,3 +1,17 @@
 package com.inventorymanager.g5.backend.user.dto
 
-data class UserDto(val id: String, val login: String, val firstname: String, val lastname: String)
+import com.fasterxml.jackson.annotation.JsonProperty
+
+data class UserDto(
+        @JsonProperty("id")
+        val id: String,
+
+        @JsonProperty("login")
+        val login: String,
+
+        @JsonProperty("firstname")
+        val firstname: String,
+
+        @JsonProperty("lastname")
+        val lastname: String
+    )
