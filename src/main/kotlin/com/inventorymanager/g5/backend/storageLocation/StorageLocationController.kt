@@ -16,14 +16,14 @@ import javax.validation.Valid
 @Validated
 class StorageLocationController @Autowired constructor(val storageLocationService: StorageLocationService) {
     @GetMapping
-    fun getAll(): ResponseEntity<Iterable<StorageLocationDTO>> {
-        return ResponseEntity.ok(storageLocationService.getAll());
+    fun getAll(@RequestParam(defaultValue = "true") onlyRoots : Boolean): ResponseEntity<Iterable<StorageLocationDTO>> {
+        return ResponseEntity.ok(storageLocationService.getAll(onlyRoots));
     }
 
     @GetMapping("/{id}")
-    fun get(@PathVariable id: String, @RequestParam(defaultValue = "true") withoutChildren : Boolean): ResponseEntity<StorageLocationDTO> {
+    fun get(@PathVariable id: String): ResponseEntity<StorageLocationDTO> {
         try {
-            return ResponseEntity.ok(storageLocationService.get(id, withoutChildren))
+            return ResponseEntity.ok(storageLocationService.get(id))
         } catch (e: ResourceDoesNotExistException) {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, e.message, e)
         }
@@ -39,7 +39,6 @@ class StorageLocationController @Autowired constructor(val storageLocationServic
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message, e)
         }
     }
-
     @PutMapping("/{id}")
     fun update(@PathVariable id : String , @Valid @RequestBody stockLocationDTO: StorageLocationDTO) : ResponseEntity<StorageLocationDTO>{
         try {

@@ -10,5 +10,5 @@ interface StorageLocationRepository : CrudRepository<StorageLocation, String> {
     fun findByName(name: String?): Optional<StorageLocation>
 
     @Query("select sl FROM StorageLocation sl WHERE sl.storageParent.id is null")
-    fun getAllRoot() : List<StorageLocation>
+    fun getOnlyRoots() : List<StorageLocation>
 }
