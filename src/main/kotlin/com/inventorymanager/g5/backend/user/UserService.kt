@@ -32,7 +32,7 @@ class UserService @Autowired constructor(
     @Throws(ResourceDoesNotExistException::class)
     fun deleteUserById(id: String) {
         if (this.repository.findById(id).isEmpty) {
-            throw ResourceDoesNotExistException(User::class.java , id)
+            throw ResourceDoesNotExistException(User::class.java , "id", id)
         }
         return repository.deleteById(id)
     }
@@ -41,7 +41,7 @@ class UserService @Autowired constructor(
     fun updateUserById(id: String, update: UserCreateDto): UserDto {
 
         if (this.repository.findById(id).isEmpty) {
-            throw ResourceDoesNotExistException(User::class.java, id)
+            throw ResourceDoesNotExistException(User::class.java, "id", id)
         }
         return mapper.userToUserDto(repository.save(User(id = id, firstname = update.firstname, lastname = update.lastname, login = update.login, password = update.password)))
     }

@@ -1,5 +1,6 @@
 package com.inventorymanager.g5.backend.storageLocation
 
+import com.inventorymanager.g5.backend.tag.Tag
 import org.hibernate.annotations.GenericGenerator
 import javax.persistence.*
 
@@ -28,4 +29,12 @@ class StorageLocation (
         orphanRemoval = true)
     @OrderBy("name ASC")
     var storageChildren: Set<StorageLocation>? = LinkedHashSet(),
+
+
+    @ManyToMany(
+        targetEntity = Tag::class,
+        fetch = FetchType.LAZY,
+    )
+    @OrderBy("name ASC")
+    var tags: Set<Tag>? = LinkedHashSet(),
 )
