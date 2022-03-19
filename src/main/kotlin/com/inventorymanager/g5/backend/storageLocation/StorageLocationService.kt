@@ -24,7 +24,7 @@ class StorageLocationService @Autowired constructor(
     fun get(storageLocationId : String) : StorageLocationDTO {
         val storageLocation: StorageLocation = storageLocationRepository
             .findById(storageLocationId)
-            .orElseThrow { ResourceDoesNotExistException(StorageLocation::class.java, storageLocationId) }
+            .orElseThrow { ResourceDoesNotExistException(StorageLocation::class.java, "id", storageLocationId) }
         return storageLocationMapper.domainToDto(storageLocation)
     }
 
@@ -40,7 +40,7 @@ class StorageLocationService @Autowired constructor(
             // check parent storageLocation existence
             storageLocationRepository
                 .findById(storageLocationDTO.storageParentId!!)
-                .orElseThrow{ ResourceDoesNotExistException(StorageLocation::class.java, storageLocationDTO.storageParentId)}
+                .orElseThrow{ ResourceDoesNotExistException(StorageLocation::class.java, "id", storageLocationDTO.storageParentId)}
         }
 
         val stockLocation : StorageLocation = storageLocationMapper.dtoToDomain(storageLocationDTO)
@@ -51,7 +51,7 @@ class StorageLocationService @Autowired constructor(
     fun update(storageLocationId: String, @Valid storageLocationDTO: StorageLocationDTO) : StorageLocationDTO? {
 
         val storageLocationById : StorageLocation =
-            storageLocationRepository.findById(storageLocationId).orElseThrow{ResourceDoesNotExistException(StorageLocation::class.java , storageLocationDTO.id)}
+            storageLocationRepository.findById(storageLocationId).orElseThrow{ResourceDoesNotExistException(StorageLocation::class.java , "id", storageLocationDTO.id)}
 
         val storageLocationByName : Optional<StorageLocation> = storageLocationRepository.findByName(storageLocationDTO.name)
         // check if name is not a duplicate
@@ -63,7 +63,7 @@ class StorageLocationService @Autowired constructor(
             // check parent storageLocation existence
             storageLocationRepository
                 .findById(storageLocationDTO.storageParentId!!)
-                .orElseThrow{ ResourceDoesNotExistException(StorageLocation::class.java, storageLocationDTO.storageParentId)}
+                .orElseThrow{ ResourceDoesNotExistException(StorageLocation::class.java, "id", storageLocationDTO.storageParentId)}
         }
 
         storageLocationMapper.mergeToDomain(storageLocationDTO, storageLocationById)
@@ -74,7 +74,7 @@ class StorageLocationService @Autowired constructor(
     @Throws(ResourceDoesNotExistException::class)
     fun delete (storageLocationId: String) : String {
         if (this.storageLocationRepository.findById(storageLocationId).isEmpty) {
-            throw ResourceDoesNotExistException(StorageLocation::class.java , storageLocationId)
+            throw ResourceDoesNotExistException(StorageLocation::class.java , "id", storageLocationId)
         }
         storageLocationRepository.deleteById(storageLocationId)
         return storageLocationId
@@ -84,7 +84,7 @@ class StorageLocationService @Autowired constructor(
     fun getStorageDirectChildren(storageLocationId : String): Iterable<StorageLocationDTO> {
         storageLocationRepository
             .findById(storageLocationId)
-            .orElseThrow { ResourceDoesNotExistException(StorageLocation::class.java, storageLocationId) }
+            .orElseThrow { ResourceDoesNotExistException(StorageLocation::class.java, "id", storageLocationId) }
 
         return storageLocationRepository.getStorageDirectChildren(storageLocationId)
             .map(storageLocationMapper::domainToDto)
@@ -95,7 +95,7 @@ class StorageLocationService @Autowired constructor(
     fun getStorageLocationNameWithAbsolutePath(storageLocationId : String): LinkedList<String?> {
         val storageLocation : StorageLocation = storageLocationRepository
             .findById(storageLocationId)
-            .orElseThrow { ResourceDoesNotExistException(StorageLocation::class.java, storageLocationId) }
+            .orElseThrow { ResourceDoesNotExistException(StorageLocation::class.java, "id", storageLocationId) }
 
         var pathNamesList =  LinkedList<String?>(listOf(storageLocation.name))
         addName(storageLocation.storageParent?.id, pathNamesList)
