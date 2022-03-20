@@ -40,4 +40,9 @@ class StorageLocation (
     )
     @OrderBy("name ASC")
     var tags: Set<Tag>? = LinkedHashSet(),
+
+    @OneToMany(
+        targetEntity = Object::class,
+        fetch = FetchType.LAZY)
+    var objects: Set<Object>? = LinkedHashSet(),    
 )
