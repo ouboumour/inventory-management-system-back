@@ -15,6 +15,9 @@ data class StorageLocationDTO(
     var name: String? = null,
 
     @field:JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    var qrCode: String? = null,
+
+    @field:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     var level : Int? = null,
 
     var storageParentId: String? = null,

@@ -1,6 +1,7 @@
 package com.inventorymanager.g5.backend.storageLocation
 
 import com.inventorymanager.g5.backend.exceptions.DuplicateEntityException
+import com.inventorymanager.g5.backend.exceptions.QrCodeException
 import com.inventorymanager.g5.backend.exceptions.ResourceDoesNotExistException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -82,6 +83,17 @@ class StorageLocationController @Autowired constructor(val storageLocationServic
             return ResponseEntity.ok(storageLocationService.getStorageLocationNameWithAbsolutePath(id))
         } catch (e: ResourceDoesNotExistException) {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, e.message, e)
+        }
+    }
+
+    @PostMapping("/{id}/generate-qr-code")
+    fun generateQrCode(@PathVariable id: String) : ResponseEntity<String>{
+        try {
+            return ResponseEntity.ok(storageLocationService.generateQrCode(id))
+        } catch (e: ResourceDoesNotExistException) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, e.message, e)
+        } catch (e: QrCodeException) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message, e)
         }
     }
 }
