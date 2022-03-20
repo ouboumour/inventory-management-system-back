@@ -1,6 +1,7 @@
 package com.inventorymanager.g5.backend.storageLocation
 
 import com.inventorymanager.g5.backend.exceptions.DuplicateEntityException
+import com.inventorymanager.g5.backend.exceptions.QrCodeException
 import com.inventorymanager.g5.backend.exceptions.ResourceDoesNotExistException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -43,8 +44,8 @@ class StorageLocationService @Autowired constructor(
                 .orElseThrow{ ResourceDoesNotExistException(StorageLocation::class.java, "id", storageLocationDTO.storageParentId)}
         }
 
-        val stockLocation : StorageLocation = storageLocationMapper.dtoToDomain(storageLocationDTO)
-        return storageLocationMapper.domainToDto(storageLocationRepository.save(stockLocation))
+        val storageLocation : StorageLocation = storageLocationMapper.dtoToDomain(storageLocationDTO)
+        return storageLocationMapper.domainToDto(storageLocationRepository.save(storageLocation))
     }
 
     @Throws(ResourceDoesNotExistException::class, DuplicateEntityException::class)
@@ -109,5 +110,20 @@ class StorageLocationService @Autowired constructor(
             pathNamesList.add(0, parentStorageLocation.name)
             addName(parentStorageLocation.storageParent?.id, pathNamesList)
         }
+    }
+
+    @Throws(ResourceDoesNotExistException::class, QrCodeException::class)
+    fun generateQrCode(storageLocationId: String) : String? {
+        val storageLocation: StorageLocation = storageLocationRepository
+            .findById(storageLocationId)
+            .orElseThrow { ResourceDoesNotExistException(StorageLocation::class.java, "id", storageLocationId) }
+
+        if (storageLocation.qrCode != null) {
+            throw QrCodeException(StorageLocation::class.java, "id", storageLocationId)
+        }
+
+        storageLocation.qrCode = UUID.randomUUID().toString()
+        storageLocationRepository.save(storageLocation)
+        return storageLocation.qrCode
     }
 }

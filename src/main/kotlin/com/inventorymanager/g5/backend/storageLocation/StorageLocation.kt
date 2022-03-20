@@ -15,6 +15,9 @@ class StorageLocation (
     @Column(unique = true, nullable = false)
     var name: String?,
 
+    @Column(unique = true)
+    var qrCode: String?,
+
     @ManyToOne(
         targetEntity = StorageLocation::class,
         fetch = FetchType.LAZY
