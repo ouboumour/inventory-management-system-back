@@ -81,7 +81,7 @@ class ObjectService @Autowired constructor(
     fun getObjectsOfStorage(id: String): Iterable<ObjectDto>? {
         val storageLocation: StorageLocation = storageLocationRepository.findById(id).orElseThrow{ResourceDoesNotExistException(StorageLocation::class.java , "id", id)}
 
-        val objectModels: Iterable<ObjectModel> = objectRepository.findAllByUserId(storageLocation.id)
+        val objectModels: Iterable<ObjectModel> = objectRepository.findAllByStorageLocationId(storageLocation.id)
         return objectMapper.objectsToObjectsDto(objectModels)
     }
 }
