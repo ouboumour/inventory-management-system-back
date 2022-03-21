@@ -2,11 +2,13 @@ package com.inventorymanager.g5.backend.user
 
 import com.inventorymanager.g5.backend.exceptions.DuplicateEntityException
 import com.inventorymanager.g5.backend.exceptions.ResourceDoesNotExistException
+import com.inventorymanager.g5.backend.storageLocation.StorageLocation
 import com.inventorymanager.g5.backend.user.dto.UserCreateDto
 import com.inventorymanager.g5.backend.user.dto.UserDto
 import com.inventorymanager.g5.backend.user.model.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.util.*
 import javax.validation.Valid
 
 @Service
@@ -39,6 +41,13 @@ class UserService @Autowired constructor(
 
     @Throws(ResourceDoesNotExistException::class)
     fun updateUserById(id: String, update: UserCreateDto): UserDto {
+        val user: User? = repository.findByLogin(update.login)
+        // check if login is not a duplicate
+        if (user != null) {
+            if (user.id != id) {
+                throw DuplicateEntityException(User::class.java, "login", user.login)
+            }
+        }
 
         if (this.repository.findById(id).isEmpty) {
             throw ResourceDoesNotExistException(User::class.java, "id", id)
