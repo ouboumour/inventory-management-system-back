@@ -34,6 +34,15 @@ class StorageLocationController @Autowired constructor(val storageLocationServic
         }
     }
 
+    @GetMapping("/user/{id}/roots")
+    fun getAllRootsByUserId(@PathVariable id: String): ResponseEntity<Iterable<StorageLocationDTO>> {
+        try {
+            return ResponseEntity.ok(storageLocationService.getRootStorageOfUser(id))
+        } catch (e: ResourceDoesNotExistException) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, e.message, e)
+        }
+    }
+
     @GetMapping("/{id}")
     fun get(@PathVariable id: String): ResponseEntity<StorageLocationDTO> {
         try {
