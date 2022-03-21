@@ -139,4 +139,12 @@ class StorageLocationService @Autowired constructor(
 
         return storageLocations.map(storageLocationMapper::domainToDto)
     }
+
+    fun getRootStorageOfUser(id: String): Iterable<StorageLocationDTO>? {
+        val user: User = userRepository.findById(id).orElseThrow { ResourceDoesNotExistException(User::class.java, "id", id) }
+
+        val storageLocations: Iterable<StorageLocation> = storageLocationRepository.findAllByUserIdAndStorageParentIsNull(user.id)
+
+        return storageLocations.map(storageLocationMapper::domainToDto)
+    }
 }

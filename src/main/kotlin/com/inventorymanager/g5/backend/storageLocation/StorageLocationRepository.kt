@@ -18,4 +18,6 @@ interface StorageLocationRepository : CrudRepository<StorageLocation, String> {
     fun getStorageDirectChildren(storageId : String?) : List<StorageLocation>
 
     fun findAllByUserId(userId: String?): Iterable<StorageLocation>
+
+    fun findAllByUserIdAndStorageParentIsNull(userId: String?): Iterable<StorageLocation>
 }
