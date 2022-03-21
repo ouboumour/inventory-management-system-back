@@ -1,5 +1,6 @@
 package com.inventorymanager.g5.backend.storageLocation
 
+import com.inventorymanager.g5.backend.objects.model.ObjectModel
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
@@ -15,4 +16,6 @@ interface StorageLocationRepository : CrudRepository<StorageLocation, String> {
 
     @Query("select sl FROM StorageLocation sl WHERE sl.storageParent.id = :storageId")
     fun getStorageDirectChildren(storageId : String?) : List<StorageLocation>
+
+    fun findAllByUserId(userId: String?): Iterable<StorageLocation>
 }

@@ -1,25 +1,25 @@
-package com.inventorymanager.g5.backend.storageLocation
+package com.inventorymanager.g5.backend.objects.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.inventorymanager.g5.backend.tag.TagDTO
-import javax.validation.Valid
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotNull
+import com.inventorymanager.g5.backend.user.model.User
 
 data class ObjectDto(
-    @field:JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty("id")
     var id: String? = null,
 
-    @field:NotNull
-    @field:NotBlank
+    @JsonProperty("name")
     var name: String? = null,
 
-    @field:JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty("qrCode")
     var qrCode: String? = null,
 
     @JsonProperty("storageLocationId")
     var storageLocationId: String? = null,
 
-    @field:Valid
-    var tags: LinkedHashSet<TagDTO>? = null
+    @JsonProperty("tags")
+    var tags: LinkedHashSet<TagDTO>? = null,
+
+    @JsonProperty("usersIds")
+    var userId: LinkedHashSet<String>? = null
 )
