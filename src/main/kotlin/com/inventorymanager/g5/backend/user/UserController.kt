@@ -1,22 +1,19 @@
 package com.inventorymanager.g5.backend.user
 
-import com.inventorymanager.g5.backend.authentication.AuthService
 import com.inventorymanager.g5.backend.exceptions.DuplicateEntityException
 import com.inventorymanager.g5.backend.exceptions.ResourceDoesNotExistException
 import com.inventorymanager.g5.backend.user.dto.UserCreateDto
 import com.inventorymanager.g5.backend.user.dto.UserDto
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
-import javax.validation.Valid
 
 
 @RestController
 @RequestMapping("api/users")
-class UserController @Autowired constructor(val service: UserService, val auth: AuthService) {
+class UserController @Autowired constructor(val service: UserService) {
 
     @GetMapping("")
     fun getAllUsers(): ResponseEntity<Iterable<UserDto>> {
@@ -42,7 +39,7 @@ class UserController @Autowired constructor(val service: UserService, val auth: 
     }
 
     @PostMapping("/user/create")
-    fun createUser(@Valid @RequestBody userCreateDto: UserCreateDto): ResponseEntity<UserDto?>? {
+    fun createUser( @RequestBody userCreateDto: UserCreateDto): ResponseEntity<UserDto?>? {
         try {
             return ResponseEntity<UserDto?>(service.addUser(userCreateDto), HttpStatus.OK)
         } catch (e: DuplicateEntityException) {
@@ -64,21 +61,6 @@ class UserController @Autowired constructor(val service: UserService, val auth: 
     fun updateUserById(@PathVariable id: String, @RequestBody userCreateDto: UserCreateDto): ResponseEntity<UserDto> {
         try {
             return ResponseEntity.ok(service.updateUserById(id, userCreateDto))
-        } catch (e: ResourceDoesNotExistException) {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND, e.message, e)
-        }
-    }
-
-    @PostMapping("/user/authenticate")
-    fun login(@RequestParam("user") login: String, @RequestParam("password") password: String?): ResponseEntity<UserDto> {
-        val token = auth.getJWTToken(login)
-        println("Token: $token")
-        try {
-            val responseHeaders = HttpHeaders()
-            if (token != null) {
-                responseHeaders.setBearerAuth(token)
-            }
-            return ResponseEntity.ok().headers(responseHeaders).body(service.findUserByLogin(login))
         } catch (e: ResourceDoesNotExistException) {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, e.message, e)
         }
