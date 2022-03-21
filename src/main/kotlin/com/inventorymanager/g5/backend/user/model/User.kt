@@ -1,11 +1,12 @@
 package com.inventorymanager.g5.backend.user.model
 
+import com.inventorymanager.g5.backend.objects.model.ObjectModel
+import com.inventorymanager.g5.backend.storageLocation.StorageLocation
+import net.bytebuddy.dynamic.scaffold.MethodGraph
 import org.hibernate.annotations.GenericGenerator
 import java.util.*
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import javax.persistence.*
+import kotlin.collections.LinkedHashSet
 
 @Entity
 data class User(
@@ -23,4 +24,16 @@ data class User(
     var firstname: String,
 
     var lastname: String,
+
+    @ManyToMany(
+            targetEntity = ObjectModel::class,
+            fetch = FetchType.LAZY,
+    )
+    var objects: Set<ObjectModel>? = LinkedHashSet(),
+
+    @ManyToMany(
+    targetEntity = StorageLocation::class,
+    fetch = FetchType.LAZY,
+    )
+    var storages: Set<StorageLocation>? = LinkedHashSet()
 )
