@@ -52,6 +52,15 @@ class StorageLocationController @Autowired constructor(val storageLocationServic
         }
     }
 
+    @GetMapping("/qrcode/{name}")
+    fun getByQrCode(@PathVariable name: String): ResponseEntity<StorageLocationDTO> {
+        try {
+            return ResponseEntity.ok(storageLocationService.getByQrCode(name))
+        } catch (e: ResourceDoesNotExistException) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, e.message, e)
+        }
+    }
+
     @PostMapping
     fun create(@RequestBody stockLocationDTO: StorageLocationCreateDTO): ResponseEntity<StorageLocationDTO?>? {
         return try {

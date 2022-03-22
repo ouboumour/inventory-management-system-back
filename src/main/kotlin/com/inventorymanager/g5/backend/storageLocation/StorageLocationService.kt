@@ -34,6 +34,14 @@ class StorageLocationService @Autowired constructor(
         return storageLocationMapper.domainToDto(storageLocation)
     }
 
+    @Throws(ResourceDoesNotExistException::class)
+    fun getByQrCode(qrCode: String): StorageLocationDTO {
+        val storageLocation: StorageLocation = storageLocationRepository
+            .findByQrCode(qrCode)
+            .orElseThrow { ResourceDoesNotExistException(StorageLocation::class.java, "qrCode", qrCode) }
+        return storageLocationMapper.domainToDto(storageLocation)
+    }
+
     @Throws(ResourceDoesNotExistException::class, DuplicateEntityException::class)
     fun create(storageLocationDTO: StorageLocationCreateDTO): StorageLocationDTO {
         val entity: Optional<StorageLocation> = storageLocationRepository.findByName(storageLocationDTO.name)
