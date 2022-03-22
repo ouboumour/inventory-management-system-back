@@ -1,15 +1,38 @@
 package com.inventorymanager.g5.backend.tag
 
+import com.inventorymanager.g5.backend.exceptions.ResourceDoesNotExistException
+import com.inventorymanager.g5.backend.tag.dto.TagCreateDto
+import com.inventorymanager.g5.backend.tag.dto.TagDTO
+import com.inventorymanager.g5.backend.user.UserRepository
+import com.inventorymanager.g5.backend.user.model.User
 import org.mapstruct.*
+import org.springframework.beans.factory.annotation.Autowired
 
 @Mapper(componentModel = "spring")
-interface TagMapper{
+abstract class TagMapper{
+    @Autowired
+    private lateinit var userRepository: UserRepository
 
-    fun domainToDto(tag : Tag) : TagDTO
+    abstract fun domainToDto(tag : Tag) : TagDTO
 
-    @Mapping(target = "id", ignore = true)
-    fun dtoToDomain(tagDto: TagDTO) : Tag
+    @Mappings(
+            Mapping(target = "id", ignore = true),
+            Mapping(source = "userId", target = "user", qualifiedByName = ["idToUser"])
+    )
+    abstract fun dtoToDomain(tagDto: TagCreateDto) : Tag
 
-    @Mapping(target = "id", ignore = true)
-    fun mergeToDomain(tagDto : TagDTO, @MappingTarget tag : Tag) : Unit
+    @Mappings(
+            Mapping(target = "id", ignore = true),
+            Mapping(source = "userId", target = "user", qualifiedByName = ["idToUser"])
+    )
+    abstract fun mergeToDomain(tagDto : TagCreateDto, @MappingTarget tag : Tag)
+
+    @Throws(ResourceDoesNotExistException::class)
+    @Named("idToUser")
+    fun idToUser(userId: String?): User? {
+        if (userId == null) return null
+        return userRepository
+                .findById(userId)
+                .orElseThrow { ResourceDoesNotExistException(User::class.java, "id", userId) }
+    }
 }

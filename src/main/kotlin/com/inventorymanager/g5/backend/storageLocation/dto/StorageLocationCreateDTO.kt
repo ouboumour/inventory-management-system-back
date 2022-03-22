@@ -1,7 +1,7 @@
 package com.inventorymanager.g5.backend.storageLocation.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.inventorymanager.g5.backend.tag.TagDTO
+import com.inventorymanager.g5.backend.tag.dto.TagDTO
 
 class StorageLocationCreateDTO(
         @JsonProperty("name")
