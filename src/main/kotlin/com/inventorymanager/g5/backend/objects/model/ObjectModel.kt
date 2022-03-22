@@ -15,7 +15,7 @@ data class ObjectModel(
     @Column(unique = true, nullable = false, updatable = false)
     var id: String?,
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     var name: String?,
 
     @Column(unique = true)

@@ -4,15 +4,14 @@ import com.inventorymanager.g5.backend.exceptions.ResourceDoesNotExistException
 import com.inventorymanager.g5.backend.storageLocation.dto.StorageLocationCreateDTO
 import com.inventorymanager.g5.backend.storageLocation.dto.StorageLocationDTO
 import com.inventorymanager.g5.backend.tag.Tag
-import com.inventorymanager.g5.backend.tag.TagDTO
-import com.inventorymanager.g5.backend.tag.TagMapper
+import com.inventorymanager.g5.backend.tag.dto.TagDTO
 import com.inventorymanager.g5.backend.tag.TagRepository
 import com.inventorymanager.g5.backend.user.UserRepository
 import com.inventorymanager.g5.backend.user.model.User
 import org.mapstruct.*
 import org.springframework.beans.factory.annotation.Autowired
 
-@Mapper(componentModel = "spring", uses = [TagMapper::class])
+@Mapper(componentModel = "spring")
 abstract class StorageLocationMapper{
 
         @Autowired
