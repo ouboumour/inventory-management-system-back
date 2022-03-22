@@ -5,9 +5,8 @@ import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
 data class TagDTO(
-        @JsonProperty("id")
-        var id: String? = null,
-
+        @NotNull(message = "Name can not be null")
+        @NotBlank(message = "Name can not be blank")
         @JsonProperty("name")
         var name: String? = null
 )
