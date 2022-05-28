@@ -1,0 +1,37 @@
+Sujet
+Système de gestion d’inventaire à la maison
+On se propose dans ce projet de réaliser une application de gestion de ses biens à la maison.
+
+Présentation
+Le but de l’application est de pouvoir enregistrer et organiser ses biens dans sa maison. Les biens ont un nom, un possesseur, un lieu de rangement et des tags pour pouvoir faire des recherches par catégorie.
+
+Fonctionnalités
+L’application va identifier des objets qui porte un nom, des tags et un propriétaire dans un lieu de rangement. Le lieu de rangement peut se décliner en plusieurs sous-lieux (exemple: Le livre A est rangé dans la boite B au 2e étage de l’étagère C dans le pièce D). L’application permet de faire des recherche sur la position d’un objet en particulier mais également de savoir ce que contient une pièce ou un sous-lieu de rangement. Le nombre de sous-lieu de rangement que l’on peut intriquer n’est pas limité. Une liste de sous lieu courant est proposé à l’utilisateur mais il peut en créer de nouveaux ainsi que leur associer des tags.
+
+L’application propose également d’imprimer des QR codes ou code barre à coller directement sur les sous-lieux de rangement pour pouvoir les identifier rapidement avec son téléphone et savoir ce qu’il y a à l’intérieur.
+
+Chaque collection d’objets peut être exportée sous différents formats standard (JSON…) pour permettre l’intégration avec d’autres applications et services. L’import de lieux à partir de ces formats doit aussi être possible. Par ailleurs, les collections peuvent être partagées entre plusieurs utilisateurs.
+
+Plusieurs utilisateurs peuvent se connecter dans la même maison et avoir chacun leur collection avec leurs objets. Il y a cependant les mêmes pièces, et certain sous-lieux de rangement en commun qu’il faut partager.
+
+Le but de l’application est d’être distribuée et décentralisée pour pouvoir être partagé avec d’autres utilisateurs temporaire. Le client devra donc jouer le rôle d’agrégateur intégrant les collections de l’utilisateur ainsi que celles qui ont été partagées avec lui, y compris sur d’autres instances du service.
+
+Il faut donc être en mesure de partager des éléments avec un utilisateur n’ayant pas forcément un compte sur le service. Pour cela, on passera par la gestion de token auquel on affectera des droits (lecture, écriture) sur des lieux ou collections (ACL). Ce token jouera le rôle d’identifiant et d’authentification. Ainsi, pour donner accès à une collections à un tiers, il faut:
+
+générer un token avec une durée de vie temporaire,
+associer les droits souhaités sur la collection au token,
+partager l’URL du service et le token avec la personne,
+l’utilisateur tiers doit ajouter l’URL et le token dans son agrégateur, qui peut ainsi découvrir les collections auxquelles il a accès.
+Partie serveur
+Le serveur devra être une application autonome. Elle doit notamment pouvoir être exécutée avec une base de donnée embarquée. Elle devra gérer correctement les caches, requête conditionnelles, et négociation de contenus. Vous êtes libres dans le choix du langage et framework.
+
+Une interface web de gestion est un plus.
+
+Partie client mobile
+L’application mobile devra permettre d’effectuer un recherche sur un objet ou un sous-lieu de rangement soit via des tags, nom ou via le scan d’un QR code.
+
+Des objets peuvent être ajouté dans un sous lieu de rangement facilement via l’application ainsi que le création de nouveaux sous lieu de rangement.
+
+Le service utilisé par l’application cliente devra pouvoir être configuré (couplage faible), avec l’URL et le compte utilisateur. Par ailleurs, d’autres services doivent pouvoir être ajouté via leur URL, éventuellement avec un token d’identification, afin de jouer le rôle d’agrégateur.
+
+Pour des raisons de performances, elle devra disposer d’un cache local.
